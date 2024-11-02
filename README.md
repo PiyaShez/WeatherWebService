@@ -22,7 +22,7 @@ Base URL:
 https://api.openweathermap.org/data/2.5/weather?
 
 Authentication:
-To access the API, you need an API key (App ID: aa69195559bd4f88d79f9aadeb77a8f6)
+To access the API, you need an API key
 
 Changes needed after clonning this repository:
 Change the Output Folder path in appsetting.json

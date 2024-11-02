@@ -26,33 +26,37 @@ namespace WeatherWebService.Controllers
             {
                 string? outputFolder = _configuration.GetValue<string>("WebServiceOutputFolder");
 
+                //Check file is uploaded or not
                 if (file == null)
                     return BadRequest("No file uploaded.");
 
-                if (outputFolder == null)
+                if (string.IsNullOrWhiteSpace(outputFolder))
                     return BadRequest("Output folder value is not set.");
 
+                //Check file format
                 var contentType = file.ContentType;
                 if (!contentType.Equals("text/plain", StringComparison.OrdinalIgnoreCase))
                 {
                     return BadRequest("Uploaded file is not a text file.");
                 }
+
                 // Create output directory if it doesn't exist
                 if (!Directory.Exists(outputFolder))
                 {
                     Directory.CreateDirectory(outputFolder);
                 }
 
+                //read the file
                 using (var reader = new StreamReader(file.OpenReadStream()))
                 {
                     string line;
                     while ((line = await reader.ReadLineAsync()) != null)
                     {
-                        var cityId = line.Trim().Split("=")[0].Trim();
-                        var cityName = line.Trim().Split("=")[1].Trim();
+                        var cityId = line.Trim().Split("=")[0].Trim(); //get City Id
+                        var cityName = line.Trim().Split("=")[1].Trim(); //get City Name
                         var weatherData = await _weatherService.GetWeatherByCity(cityId);
-                        var fileName = Path.Combine(outputFolder, $"{cityName.Replace(" ", "_")}_{DateTime.Now:yyyyMMdd}.json");
-                        await System.IO.File.WriteAllTextAsync(fileName, weatherData);
+                        var fileName = Path.Combine(outputFolder, $"{cityName.Replace(" ", "_")}_{DateTime.Now:yyyyMMdd}.json"); //file Name
+                        await System.IO.File.WriteAllTextAsync(fileName, weatherData);//generate the file 
                     }
                 }
 

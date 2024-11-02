@@ -16,12 +16,15 @@
             {
                 string? apiKey = _configuration.GetValue<string>("WebApiKey");
                 string? endPointURL = _configuration.GetValue<string>("WebAPIEndPoint");
-                if (endPointURL == null)
+                
+                //Check apiKey and endpoint URL is null or not
+                if (string.IsNullOrWhiteSpace(endPointURL))
                     throw new Exception("Please provide a webapi end point URL");
 
-                if (apiKey == null)
+                if (string.IsNullOrWhiteSpace(apiKey))
                     throw new Exception("Please provide API Key");
-
+                
+                //call the endpoint url
                 var response = await _httpClient.GetAsync(endPointURL+$"id={cityId}&appid={apiKey}");
                 response.EnsureSuccessStatusCode();
 
